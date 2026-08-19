@@ -1,0 +1,12 @@
+[submodule "procurement-service"]
+	path = procurement-service
+	url = https://github.com/thenurinethangi/cloudprocure-procurement-service.git
+	branch = main
+[submodule "supplier-service"]
+	path = supplier-service
+	url = https://github.com/thenurinethangi/cloudprocure-supplier-service.git
+	branch = main
+[submodule "order-service"]
+	path = order-service
+	url = https://github.com/thenurinethangi/cloudprocure-order-service.git
+	branch = main

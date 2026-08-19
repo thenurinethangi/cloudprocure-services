@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${ENABLE_CLOUDPROCURE_STARTUP:-false}" != "true" ]]; then
+  echo "CloudProcure startup disabled; enable only after secrets and tokens are configured."
+  exit 0
+fi
+
+install_root="/opt/cloudprocure"
+ecosystem_file="${install_root}/services-ecosystem.config.cjs"
+[[ -f "${ecosystem_file}" ]] || { echo "Missing ${ecosystem_file}"; exit 1; }
+java -version 2>&1 | grep -q 'version "25' || { echo "Java 25 is required"; exit 1; }
+command -v pm2 >/dev/null || { echo "PM2 must be baked into the base image"; exit 1; }
+
+# DB_PASSWORD and other secrets must already be injected into this process environment.
+pm2 start "${ecosystem_file}" --only "<PM2_APPLICATION_NAME>"
+pm2 save
