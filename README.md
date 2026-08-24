@@ -84,6 +84,23 @@ Example events include:
 
 Used to store purchase request attachments uploaded through the application.
 
+## Setup / Getting Started
+
+### Prerequisites
+
+- Git
+- Java 25
+- Internet access to clone the submodule repositories
+
+### Clone the Repository
+
+Clone the parent repository together with all business-service submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/thenurinethangi/cloudprocure-services.git
+cd cloudprocure-services
+```
+
 ## Service Flow
 
 ```text
