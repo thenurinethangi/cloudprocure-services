@@ -1,7 +1,7 @@
 
 ---
 
-## 2. `cloudprocure-services/README.md`
+## `cloudprocure-services/README.md`
 
 ```markdown
 # CloudProcure Services
