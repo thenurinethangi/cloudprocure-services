@@ -1,41 +1,117 @@
+
+---
+
+## 2. `cloudprocure-services/README.md`
+
+```markdown
 # CloudProcure Services
 
-Super-repository for the independently buildable Procurement, Supplier, and Order applications. Each service is a public Git submodule with its own lifecycle, database ownership, Maven build, and `main` branch.
+Business microservices super-repository for the **ProcureFlow Enterprise Procurement System**, developed for the ITS 2130 - Enterprise Cloud Architecture final project.
 
-## Submission identity
+## Student Information
 
-- Student Name: `<STUDENT_NAME>`
-- Student Number: `<STUDENT_NUMBER>`
-- Slack Handle: `<SLACK_HANDLE>`
-- GCP Project ID: `<GCP_PROJECT_ID>`
+- **Student Name:** Thenuri Nethangi Nanayakkara
+- **Student ID:** 241711017
+- **Module:** ITS 2130 - Enterprise Cloud Architecture
 
-## Repository structure
+## Google Cloud Project
 
-| Path | Repository | Data store |
-| --- | --- | --- |
-| `procurement-service` | `cloudprocure-procurement-service` | PostgreSQL |
-| `supplier-service` | `cloudprocure-supplier-service` | MongoDB |
-| `order-service` | `cloudprocure-order-service` | PostgreSQL |
+- **Project Name:** ProcureFlow ECA
+- **Project ID:** `procureflow-eca`
+- **Primary Region:** `us-central1`
 
-## Clone
+## Live Application
 
-```powershell
-git clone --recurse-submodules https://github.com/thenurinethangi/cloudprocure-services.git
-cd cloudprocure-services
-git submodule update --init --recursive
-```
+**Frontend:**  
+https://procureflow-frontend-7vni4yihhq-uc.a.run.app
 
-## Build
+## Repository Purpose
 
-Each service builds and deploys independently with its own Maven wrapper:
+This repository is the **business services parent / super-repository**.
 
-```powershell
-.\procurement-service\mvnw.cmd test
-.\supplier-service\mvnw.cmd test
-.\order-service\mvnw.cmd test
-```
+It contains all backend business microservices as Git submodules.
 
-For local development, PostgreSQL is exposed on port 15432 and MongoDB on port 27018. Start Config Server and Eureka before the business services; access public APIs through the API Gateway on port 8088. Internal OpenFeign callbacks remain idempotent, and `/actuator/health` is the baseline health-check endpoint for every service.
+### Submodules
 
-The non-destructive GCP preparation assets are under `docs/gcp`. Real GCP infrastructure, managed data services, identities, load balancing, high availability, autoscaling, and deployment verification remain mandatory before academic completion.
+| Submodule | Responsibility | Database / Storage |
+|---|---|---|
+| `procurement-service` | Purchase requests, departments, approval lifecycle and attachments | PostgreSQL / Cloud SQL, Cloud Storage |
+| `supplier-service` | Supplier and catalog management | MongoDB, Firestore activity events |
+| `order-service` | Purchase order lifecycle and service integration | PostgreSQL / Cloud SQL |
 
+Submodule repositories:
+
+- https://github.com/thenurinethangi/cloudprocure-procurement-service
+- https://github.com/thenurinethangi/cloudprocure-supplier-service
+- https://github.com/thenurinethangi/cloudprocure-order-service
+
+## Backend Deployment
+
+The business services are deployed on **Google Compute Engine Managed Instance Groups**.
+
+The deployment provides:
+
+- Multiple VM instances
+- Multi-zone deployment
+- Autoscaling
+- Health checks
+- PM2 process management
+- Eureka service registration
+- Centralized configuration through Config Server
+- API access through Spring Cloud API Gateway
+
+## Data Architecture
+
+The system demonstrates both relational and NoSQL persistence.
+
+### PostgreSQL / Cloud SQL
+
+Used by:
+
+- Procurement Service
+- Order Service
+
+### MongoDB
+
+Used by:
+
+- Supplier Service
+
+### Google Firestore
+
+Used for application activity and audit events.
+
+Example events include:
+
+- `SUPPLIER_CREATED`
+- `CATALOG_ITEM_CREATED`
+
+### Google Cloud Storage
+
+Used to store purchase request attachments uploaded through the application.
+
+## Service Flow
+
+```text
+Cloud Run Frontend
+        |
+        v
+External Load Balancer
+        |
+        v
+API Gateway
+        |
+        v
+Eureka
+        |
+        +----------------------+
+        |          |           |
+        v          v           v
+ Procurement   Supplier      Order
+ Service       Service       Service
+    |             |             |
+ Cloud SQL      MongoDB       Cloud SQL
+    |
+ Cloud Storage
+
+Firestore stores activity/audit events.
