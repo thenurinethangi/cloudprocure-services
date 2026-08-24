@@ -101,6 +101,20 @@ git clone --recurse-submodules https://github.com/thenurinethangi/cloudprocure-s
 cd cloudprocure-services
 ```
 
+If the repository was already cloned without submodules:
+
+```bash
+git submodule update --init --recursive
+```
+
+The repository includes:
+
+- `procurement-service`
+- `supplier-service`
+- `order-service`
+
+Each microservice contains its own build and runtime instructions.
+
 ## Service Flow
 
 ```text
